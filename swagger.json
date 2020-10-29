@@ -205,7 +205,7 @@
     "/ffa/createSoftwareEntity" : {
       "post" : {
         "tags" : [ "POST Actions" ],
-        "summary" : "Add a Software Entity to FFA. ",
+        "summary" : "Create New Software Entity. ",
         "description" : "Add a Software Entity to FFA.  Software Entities contain the softwareName and softwareKeys for each unique software platform created and released by Extreme Networks.",
         "requestBody" : {
           "description" : "The following values are **Mandatory**",
@@ -228,7 +228,7 @@
     "/ffa/{softwareName}/{buildType}/createRuleSet" : {
       "post" : {
         "tags" : [ "POST Actions" ],
-        "summary" : "Creates a Rule Set",
+        "summary" : "Create New Rule Set",
         "description" : "Creates a Rule Set for a specific softwareName and buildType.   The new rule set will have the lowest priority within the Rule Sets that contain the same precedence for the same build type.",
         "parameters" : [ {
           "name" : "softwareName",
@@ -272,7 +272,7 @@
     "/ffa/{softwareName}/createLabel" : {
       "post" : {
         "tags" : [ "POST Actions" ],
-        "summary" : "create new labels",
+        "summary" : "Create New Label",
         "description" : "Allows users to create new labels that will be included in the Rule Set evaluations.",
         "parameters" : [ {
           "name" : "softwareName",
@@ -407,9 +407,9 @@
       }
     },
     "/ffa/{softwareName}/{buildType}/{ruleSetId}/updateRuleSet" : {
-      "post" : {
-        "tags" : [ "POST Actions" ],
-        "summary" : "Updates existing Rule Set",
+      "put" : {
+        "tags" : [ "PUT Actions" ],
+        "summary" : "Update/Modify Rule Set",
         "description" : "Updates the values of an existing Rule Set.  This will allow users to set the priority, enable or disable the Rule Set etc. This API is restricted to authenticated users with specific roles of either developer, PLM, QA and administrator.",
         "parameters" : [ {
           "name" : "softwareName",
