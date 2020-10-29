@@ -19,13 +19,13 @@
   } ],
   "tags" : [ {
     "name" : "PUT Actions",
-    "description" : "Add new stuff in the DB (Crud)"
+    "description" : " Idempotent - Create new, or overwrite existing data in the DB"
   }, {
     "name" : "GET Actions",
-    "description" : "Read stuff from the DB(cRud)"
+    "description" : "Retrieve data "
   }, {
     "name" : "POST Actions",
-    "description" : "Update stuff already in the DB (crUd)"
+    "description" : "Non-idempotent. Create new data in the DB"
   }, {
     "name" : "DevOpsIQ",
     "description" : "DevOpsIQ AWS Dashboard",
@@ -36,36 +36,166 @@
   } ],
   "paths" : {
     "/ffa/{softwareName}/checkFeatureStates" : {
-      "post" : {
-        "tags" : [ "POST Actions" ],
-        "summary" : "Get list of enabled/disabled features",
+      "get" : {
+        "tags" : [ "GET Actions" ],
+        "summary" : "Get a list of enabled/disabled features",
         "description" : "This is the primary API endpoint for FFA agents. When agents boot they will send their current characteristics and settings to this endpoint.  The endpoint will then return a JSON response echoing the data passed in along with desired states of features.",
         "parameters" : [ {
           "name" : "softwareName",
-          "in" : "path",
-          "description" : "Common name associated with the software",
+          "in" : "query",
+          "description" : "Required",
           "required" : true,
-          "style" : "simple",
-          "explode" : false,
+          "style" : "form",
+          "explode" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "example" : "softwareName=EXOS"
+          }
+        }, {
+          "name" : "ffSettings",
+          "in" : "query",
+          "description" : "Required",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "ffSettings='feat1:enabled,feat2:disabled'"
+          }
+        }, {
+          "name" : "ffaEnabled",
+          "in" : "query",
+          "description" : "Required (none, developer, official, GA )",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "ffaEnabled=developer"
+          }
+        }, {
+          "name" : "softwareKey",
+          "in" : "query",
+          "description" : "Required",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "softwareKey=0134A335C90221"
+          }
+        }, {
+          "name" : "buildType",
+          "in" : "query",
+          "description" : "Required (developer, official, GA)",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "buildType=developer"
+          }
+        }, {
+          "name" : "builder",
+          "in" : "query",
+          "description" : "Required",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "builder=mgoddard"
+          }
+        }, {
+          "name" : "serialNumber",
+          "in" : "query",
+          "description" : "Required",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "serialNumber=jsj1234"
+          }
+        }, {
+          "name" : "softwareVersion",
+          "in" : "query",
+          "description" : "Optional",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "softwareVersion=1.0.0.2"
+          }
+        }, {
+          "name" : "buildDate",
+          "in" : "query",
+          "description" : "Optional",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "buildDate='2020-10-10 10:15:41'"
+          }
+        }, {
+          "name" : "userLicense",
+          "in" : "query",
+          "description" : "Optional",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "userLicense=0123A43B289"
+          }
+        }, {
+          "name" : "bootTime",
+          "in" : "query",
+          "description" : "Optional",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "bootTime='2020-10-10 11:05:11'"
+          }
+        }, {
+          "name" : "platform",
+          "in" : "query",
+          "description" : "Optional",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "platform=NGX"
+          }
+        }, {
+          "name" : "customerId",
+          "in" : "query",
+          "description" : "Optional",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "customerId=1023FAB013CC"
+          }
+        }, {
+          "name" : "adopterCategory",
+          "in" : "query",
+          "description" : "Optional, use one of - 'innovator', 'earlyAdopter', 'earlyMajority', 'lastMajority', 'laggard'",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "adopterCategory=earlyAdopter"
           }
         } ],
-        "requestBody" : {
-          "description" : "Optional description in *Markdown*",
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ffSettings"
-              }
-            }
-          },
-          "required" : true
-        },
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
@@ -78,7 +208,7 @@
         "summary" : "Add a Software Entity to FFA. ",
         "description" : "Add a Software Entity to FFA.  Software Entities contain the softwareName and softwareKeys for each unique software platform created and released by Extreme Networks.",
         "requestBody" : {
-          "description" : "Optional description in *Markdown*",
+          "description" : "The following values are **Mandatory**",
           "content" : {
             "application/json" : {
               "schema" : {
@@ -89,9 +219,6 @@
           "required" : true
         },
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
@@ -136,9 +263,6 @@
           "required" : true
         },
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
@@ -173,9 +297,6 @@
           "required" : true
         },
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
@@ -188,9 +309,6 @@
         "summary" : "Lists all supported softwareEntities",
         "description" : "Lists all softwareEntities supported by FFA along with their values. This API is restricted to authenticated users.",
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
@@ -224,16 +342,13 @@
           }
         } ],
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
         }
       }
     },
-    "/ffa/{userName}/getRuleSets" : {
+    "/ffa/{userName}/getUserRuleSets" : {
       "get" : {
         "tags" : [ "GET Actions" ],
         "summary" : "Returns Rule Sets created by user.",
@@ -250,9 +365,6 @@
           }
         } ],
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
@@ -276,9 +388,6 @@
           }
         } ],
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
@@ -291,9 +400,6 @@
         "summary" : "test Rule Set against set of characteristics.",
         "description" : "Allows a user to test a specific Rule Set against a set of characteristics.  The user will pass in a sample characteristics file along with configuration values for a Rule Set.  The API will then validate the Rule Set and evaluate the Rule Set against the passed in characteristics.",
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
@@ -301,8 +407,8 @@
       }
     },
     "/ffa/{softwareName}/{buildType}/{ruleSetId}/updateRuleSet" : {
-      "put" : {
-        "tags" : [ "PUT Actions" ],
+      "post" : {
+        "tags" : [ "POST Actions" ],
         "summary" : "Updates existing Rule Set",
         "description" : "Updates the values of an existing Rule Set.  This will allow users to set the priority, enable or disable the Rule Set etc. This API is restricted to authenticated users with specific roles of either developer, PLM, QA and administrator.",
         "parameters" : [ {
@@ -338,9 +444,6 @@
           }
         } ],
         "responses" : {
-          "400" : {
-            "description" : "Bad or malformed Request"
-          },
           "200" : {
             "description" : "Success"
           }
@@ -371,74 +474,14 @@
           }
         }
       },
-      "ffSettings" : {
-        "type" : "object",
-        "properties" : {
-          "ffaEnabled" : {
-            "type" : "string",
-            "example" : "developer",
-            "enum" : [ "none", "developer", "official", "GA" ]
-          },
-          "softwareName" : {
-            "type" : "string",
-            "example" : "EXOS"
-          },
-          "softwareKey" : {
-            "type" : "string",
-            "example" : "0134A335C90221"
-          },
-          "buildType" : {
-            "type" : "string",
-            "example" : "developer",
-            "enum" : [ "developer", "official", "GA" ]
-          },
-          "builder" : {
-            "type" : "string",
-            "example" : "mgoddard"
-          },
-          "serialNumber" : {
-            "type" : "string",
-            "example" : "jsj1234"
-          },
-          "userLicense" : {
-            "type" : "string",
-            "example" : "0123A43B289"
-          },
-          "softwareVersion" : {
-            "type" : "string",
-            "example" : "1.0.0.2"
-          },
-          "buildDate" : {
-            "type" : "string",
-            "example" : "2020-10-10 10:15:41"
-          },
-          "bootTime" : {
-            "type" : "string",
-            "example" : "2020-10-10 11:05:11"
-          },
-          "platform" : {
-            "type" : "string",
-            "example" : "NGX"
-          },
-          "customerId" : {
-            "type" : "string",
-            "example" : "1023FAB013CC"
-          },
-          "adopterCategory" : {
-            "type" : "string",
-            "example" : "earlyAdopter",
-            "enum" : [ "innovator", "earlyAdopter", "earlyMajority", "lastMajority", "laggard" ]
-          }
-        }
-      },
       "body" : {
         "type" : "object",
         "properties" : {
-          "FFlabel" : {
+          "labelName" : {
             "type" : "string",
             "example" : "NewLabel"
           },
-          "precedence" : {
+          "precedenceLevel" : {
             "type" : "integer",
             "example" : 1
           }
@@ -491,6 +534,188 @@
               "example" : "featureA, featureB, ..."
             }
           }
+        }
+      }
+    },
+    "parameters" : {
+      "FeatureStatePathParams" : {
+        "name" : "softwareName",
+        "in" : "path",
+        "description" : "Common name associated with the software",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "string",
+          "example" : "/ffa/EXOS/checkFeatureStates"
+        }
+      },
+      "ffaSettingsQueryParam" : {
+        "name" : "ffSettings",
+        "in" : "query",
+        "description" : "Required",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "ffSettings='feat1:enabled,feat2:disabled'"
+        }
+      },
+      "ffaEnabledQueryParam" : {
+        "name" : "ffaEnabled",
+        "in" : "query",
+        "description" : "Required (none, developer, official, GA )",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "ffaEnabled=developer"
+        }
+      },
+      "softwareNameQueryParam" : {
+        "name" : "softwareName",
+        "in" : "query",
+        "description" : "Required",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "softwareName=EXOS"
+        }
+      },
+      "softwareKeyQueryParam" : {
+        "name" : "softwareKey",
+        "in" : "query",
+        "description" : "Required",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "softwareKey=0134A335C90221"
+        }
+      },
+      "buildTypeQueryParam" : {
+        "name" : "buildType",
+        "in" : "query",
+        "description" : "Required (developer, official, GA)",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "buildType=developer"
+        }
+      },
+      "builderQueryParam" : {
+        "name" : "builder",
+        "in" : "query",
+        "description" : "Required",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "builder=mgoddard"
+        }
+      },
+      "serialNumberQueryParam" : {
+        "name" : "serialNumber",
+        "in" : "query",
+        "description" : "Required",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "serialNumber=jsj1234"
+        }
+      },
+      "userLicenseQueryParam" : {
+        "name" : "userLicense",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "userLicense=0123A43B289"
+        }
+      },
+      "softwareVersionQueryParam" : {
+        "name" : "softwareVersion",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "softwareVersion=1.0.0.2"
+        }
+      },
+      "buildDateQueryParam" : {
+        "name" : "buildDate",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "buildDate='2020-10-10 10:15:41'"
+        }
+      },
+      "bootTimeQueryParam" : {
+        "name" : "bootTime",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "bootTime='2020-10-10 11:05:11'"
+        }
+      },
+      "platformQueryParam" : {
+        "name" : "platform",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "platform=NGX"
+        }
+      },
+      "customerIdQueryParam" : {
+        "name" : "customerId",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "customerId=1023FAB013CC"
+        }
+      },
+      "adopterCategoryQueryParam" : {
+        "name" : "adopterCategory",
+        "in" : "query",
+        "description" : "Optional, use one of - 'innovator', 'earlyAdopter', 'earlyMajority', 'lastMajority', 'laggard'",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "adopterCategory=earlyAdopter"
         }
       }
     }
