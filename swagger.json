@@ -252,7 +252,6 @@
           }
         } ],
         "requestBody" : {
-          "description" : "Optional description in *Markdown*",
           "content" : {
             "application/json" : {
               "schema" : {
@@ -286,7 +285,6 @@
           }
         } ],
         "requestBody" : {
-          "description" : "Optional description in *Markdown*",
           "content" : {
             "application/json" : {
               "schema" : {
@@ -439,10 +437,19 @@
           "style" : "simple",
           "explode" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int64"
+            "type" : "string"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ffRuleSet"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
             "description" : "Success"
@@ -467,27 +474,6 @@
         }
       },
       "ffRuleSet" : {
-        "type" : "object",
-        "properties" : {
-          "IndexID" : {
-            "$ref" : "#/components/schemas/ffRuleSet_IndexID"
-          }
-        }
-      },
-      "body" : {
-        "type" : "object",
-        "properties" : {
-          "labelName" : {
-            "type" : "string",
-            "example" : "NewLabel"
-          },
-          "precedenceLevel" : {
-            "type" : "integer",
-            "example" : 1
-          }
-        }
-      },
-      "ffRuleSet_IndexID" : {
         "type" : "object",
         "properties" : {
           "softwareName" : {
@@ -533,6 +519,19 @@
               "type" : "string",
               "example" : "featureA, featureB, ..."
             }
+          }
+        }
+      },
+      "body" : {
+        "type" : "object",
+        "properties" : {
+          "labelName" : {
+            "type" : "string",
+            "example" : "NewLabel"
+          },
+          "precedenceLevel" : {
+            "type" : "integer",
+            "example" : 1
           }
         }
       }
