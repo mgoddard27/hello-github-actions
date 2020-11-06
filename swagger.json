@@ -480,6 +480,10 @@
             "type" : "string",
             "example" : "product name"
           },
+          "softwareKey" : {
+            "type" : "string",
+            "example" : "0134A335C90221"
+          },
           "priority" : {
             "type" : "integer",
             "example" : 1
