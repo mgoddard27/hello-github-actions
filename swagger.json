@@ -476,9 +476,9 @@
       "ffRuleSet" : {
         "type" : "object",
         "properties" : {
-          "softwareName" : {
+          "buildType" : {
             "type" : "string",
-            "example" : "product name"
+            "example" : "developer"
           },
           "softwareKey" : {
             "type" : "string",
@@ -487,14 +487,6 @@
           "priority" : {
             "type" : "integer",
             "example" : 1
-          },
-          "createdOn" : {
-            "type" : "string",
-            "example" : "some-formatted-date"
-          },
-          "createdBy" : {
-            "type" : "string",
-            "example" : "userID"
           },
           "orlist" : {
             "type" : "array",
