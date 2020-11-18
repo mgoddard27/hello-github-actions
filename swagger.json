@@ -292,15 +292,15 @@
         }
       }
     },
-    "/ffa/{softwareName}/{buildType}/getPolicy" : {
+    "/ffa/{softwareKey}/{buildType}/getPolicy" : {
       "get" : {
         "tags" : [ "GET Actions" ],
         "summary" : "Returns policy for a given software package",
         "description" : "Returns the entire policy for a given software package and build type.  It will include all of the Rule Sets that make up the policy in order of how they will be evaluated.",
         "parameters" : [ {
-          "name" : "softwareName",
+          "name" : "softwareKey",
           "in" : "path",
-          "description" : "Common name associated with the software",
+          "description" : "SW Key associated with the software",
           "required" : true,
           "style" : "simple",
           "explode" : false,
