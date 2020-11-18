@@ -225,32 +225,11 @@
         }
       }
     },
-    "/ffa/{softwareName}/{buildType}/createRuleSet" : {
+    "/ffa/createRuleSet" : {
       "post" : {
         "tags" : [ "POST Actions" ],
         "summary" : "Create New Rule Set",
         "description" : "Creates a Rule Set for a specific softwareName and buildType.   The new rule set will have the lowest priority within the Rule Sets that contain the same precedence for the same build type.",
-        "parameters" : [ {
-          "name" : "softwareName",
-          "in" : "path",
-          "description" : "Common name associated with the software",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "buildType",
-          "in" : "path",
-          "description" : "Type of build identified for this version of software",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
