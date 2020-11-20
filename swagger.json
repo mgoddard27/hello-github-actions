@@ -221,6 +221,9 @@
         "responses" : {
           "200" : {
             "description" : "Success"
+          },
+          "305" : {
+            "description" : "Required arg not found in JSON payload"
           }
         }
       }
@@ -243,6 +246,9 @@
         "responses" : {
           "200" : {
             "description" : "Success"
+          },
+          "305" : {
+            "description" : "Missing attribtute, invalid operator, incorrect arg count"
           }
         }
       }
@@ -276,6 +282,9 @@
         "responses" : {
           "200" : {
             "description" : "Success"
+          },
+          "305" : {
+            "description" : "Missing arg, duplicate entry"
           }
         }
       }
@@ -292,15 +301,15 @@
         }
       }
     },
-    "/ffa/{softwareKey}/{buildType}/getPolicy" : {
+    "/ffa/{softwareName}/{buildType}/getPolicy" : {
       "get" : {
         "tags" : [ "GET Actions" ],
         "summary" : "Returns policy for a given software package",
         "description" : "Returns the entire policy for a given software package and build type.  It will include all of the Rule Sets that make up the policy in order of how they will be evaluated.",
         "parameters" : [ {
-          "name" : "softwareKey",
+          "name" : "softwareName",
           "in" : "path",
-          "description" : "SW Key associated with the software",
+          "description" : "SW Name associated with the software",
           "required" : true,
           "style" : "simple",
           "explode" : false,
@@ -321,6 +330,9 @@
         "responses" : {
           "200" : {
             "description" : "Success"
+          },
+          "202" : {
+            "description" : "No Matching Policy"
           }
         }
       }
@@ -344,6 +356,43 @@
         "responses" : {
           "200" : {
             "description" : "Success"
+          },
+          "305" : {
+            "description" : "Failure"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "POST Actions" ],
+        "summary" : "Returns Rule Sets created by user.",
+        "description" : "Returns all of the Rule Sets created by a particular user.  The API supports filtering by fields present in the output including softwareName and various labels used in the Rule Sets.",
+        "parameters" : [ {
+          "name" : "userName",
+          "in" : "path",
+          "description" : "User name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ffgetUserRuleSet"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "305" : {
+            "description" : "Failure"
           }
         }
       }
@@ -489,6 +538,25 @@
             "items" : {
               "type" : "string",
               "example" : "featureA, featureB, ..."
+            }
+          }
+        }
+      },
+      "ffgetUserRuleSet" : {
+        "type" : "object",
+        "properties" : {
+          "filter" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "[\"keyword\",\"keyword\",\"...\"]"
+            }
+          },
+          "daterange" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "[\"2020-11-10,2020-11-20\"]"
             }
           }
         }
