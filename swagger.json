@@ -36,168 +36,38 @@
   } ],
   "paths" : {
     "/ffa/{softwareName}/checkFeatureStates" : {
-      "get" : {
-        "tags" : [ "GET Actions" ],
+      "post" : {
+        "tags" : [ "POST Actions" ],
         "summary" : "Get a list of enabled/disabled features",
         "description" : "This is the primary API endpoint for FFA agents. When agents boot they will send their current characteristics and settings to this endpoint.  The endpoint will then return a JSON response echoing the data passed in along with desired states of features.",
         "parameters" : [ {
           "name" : "softwareName",
-          "in" : "query",
-          "description" : "Required",
+          "in" : "path",
+          "description" : "Common name associated with the software",
           "required" : true,
-          "style" : "form",
-          "explode" : true,
+          "style" : "simple",
+          "explode" : false,
           "schema" : {
             "type" : "string",
-            "example" : "softwareName=EXOS"
-          }
-        }, {
-          "name" : "ffSettings",
-          "in" : "query",
-          "description" : "Required",
-          "required" : true,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "ffSettings='feat1:enabled,feat2:disabled'"
-          }
-        }, {
-          "name" : "ffaEnabled",
-          "in" : "query",
-          "description" : "Required (none, developer, official, GA )",
-          "required" : true,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "ffaEnabled=developer"
-          }
-        }, {
-          "name" : "softwareKey",
-          "in" : "query",
-          "description" : "Required",
-          "required" : true,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "softwareKey=0134A335C90221"
-          }
-        }, {
-          "name" : "buildType",
-          "in" : "query",
-          "description" : "Required (developer, official, GA)",
-          "required" : true,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "buildType=developer"
-          }
-        }, {
-          "name" : "builder",
-          "in" : "query",
-          "description" : "Required",
-          "required" : true,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "builder=mgoddard"
-          }
-        }, {
-          "name" : "serialNumber",
-          "in" : "query",
-          "description" : "Required",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "serialNumber=jsj1234"
-          }
-        }, {
-          "name" : "softwareVersion",
-          "in" : "query",
-          "description" : "Optional",
-          "required" : true,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "softwareVersion=1.0.0.2"
-          }
-        }, {
-          "name" : "buildDate",
-          "in" : "query",
-          "description" : "Optional",
-          "required" : true,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "buildDate='2020-10-10 10:15:41'"
-          }
-        }, {
-          "name" : "userLicense",
-          "in" : "query",
-          "description" : "Optional",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "userLicense=0123A43B289"
-          }
-        }, {
-          "name" : "bootTime",
-          "in" : "query",
-          "description" : "Optional",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "bootTime='2020-10-10 11:05:11'"
-          }
-        }, {
-          "name" : "platform",
-          "in" : "query",
-          "description" : "Optional",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "platform=NGX"
-          }
-        }, {
-          "name" : "customerId",
-          "in" : "query",
-          "description" : "Optional",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "customerId=1023FAB013CC"
-          }
-        }, {
-          "name" : "adopterCategory",
-          "in" : "query",
-          "description" : "Optional, use one of - 'innovator', 'earlyAdopter', 'earlyMajority', 'lastMajority', 'laggard'",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string",
-            "example" : "adopterCategory=earlyAdopter"
+            "example" : "/ffa/EXOS/checkFeatureStates"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ffcheckFeatureStates"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
             "description" : "Success"
+          },
+          "305" : {
+            "description" : "Failure"
           }
         }
       }
@@ -542,6 +412,58 @@
           }
         }
       },
+      "ffcheckFeatureStates" : {
+        "type" : "object",
+        "properties" : {
+          "softwareKey" : {
+            "type" : "string",
+            "example" : "UID0134A335C90221"
+          },
+          "softwareName" : {
+            "type" : "string",
+            "example" : "EXOS"
+          },
+          "softwareVersion" : {
+            "type" : "string",
+            "example" : "1.0.0"
+          },
+          "buildType" : {
+            "type" : "string",
+            "example" : "developer"
+          },
+          "builder" : {
+            "type" : "string",
+            "example" : "joedeveloper"
+          },
+          "serialNumber" : {
+            "type" : "string",
+            "example" : "xxx444455555"
+          },
+          "userLicenseLevel" : {
+            "type" : "string",
+            "example" : "0123A43B289"
+          },
+          "plaftorm" : {
+            "type" : "string",
+            "example" : "NGX"
+          },
+          "buildDate" : {
+            "type" : "string",
+            "example" : "2020-10-10 10:15:41"
+          },
+          "customerId" : {
+            "type" : "string",
+            "example" : "1023FAB013CC"
+          },
+          "adopterCategory" : {
+            "type" : "string",
+            "example" : "earlyAdopter"
+          },
+          "ffSettings" : {
+            "$ref" : "#/components/schemas/ffcheckFeatureStates_ffSettings"
+          }
+        }
+      },
       "ffgetUserRuleSet" : {
         "type" : "object",
         "properties" : {
@@ -571,6 +493,15 @@
           "precedenceLevel" : {
             "type" : "integer",
             "example" : 1
+          }
+        }
+      },
+      "ffcheckFeatureStates_ffSettings" : {
+        "type" : "object",
+        "properties" : {
+          "featureA" : {
+            "type" : "string",
+            "example" : "enabled"
           }
         }
       }
