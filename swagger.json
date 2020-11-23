@@ -467,11 +467,18 @@
       "ffgetUserRuleSet" : {
         "type" : "object",
         "properties" : {
-          "filter" : {
+          "contains" : {
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "[\"keyword\",\"keyword\",\"...\"]"
+              "example" : "[\"keyword1\",\"keyword2\",\"...\"]"
+            }
+          },
+          "ignore" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "[\"keyword1\",\"keyword2\",\"...\"]"
             }
           },
           "daterange" : {
