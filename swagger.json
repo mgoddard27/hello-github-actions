@@ -1,0 +1,699 @@
+{
+  "openapi" : "3.0.2",
+  "info" : {
+    "title" : "Feature Flags Application",
+    "description" : "Feature Flags Application Specs",
+    "contact" : {
+      "name" : "Mike Goddard",
+      "email" : "mgoddard@extremenetworks.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/mgoddard27/FFA1.0/1.0.0",
+    "description" : "SwaggerHub API Auto Mocking"
+  } ],
+  "tags" : [ {
+    "name" : "PUT Actions",
+    "description" : " Idempotent - Create new, or overwrite existing data in the DB"
+  }, {
+    "name" : "GET Actions",
+    "description" : "Retrieve data "
+  }, {
+    "name" : "POST Actions",
+    "description" : "Non-idempotent. Create new data in the DB"
+  }, {
+    "name" : "DevOpsIQ",
+    "description" : "DevOpsIQ AWS Dashboard",
+    "externalDocs" : {
+      "description" : "Check out our stuff",
+      "url" : "http://devopsiq.extremenetworks.com/"
+    }
+  } ],
+  "paths" : {
+    "/ffa/{softwareName}/checkFeatureStates" : {
+      "post" : {
+        "tags" : [ "POST Actions" ],
+        "summary" : "Get a list of enabled/disabled features",
+        "description" : "This is the primary API endpoint for FFA agents. When agents boot they will send their current characteristics and settings to this endpoint.  The endpoint will then return a JSON response echoing the data passed in along with desired states of features.",
+        "parameters" : [ {
+          "name" : "softwareName",
+          "in" : "path",
+          "description" : "Common name associated with the software",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "/ffa/EXOS/checkFeatureStates"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ffcheckFeatureStates"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "305" : {
+            "description" : "Failure"
+          }
+        }
+      }
+    },
+    "/ffa/createSoftwareEntity" : {
+      "post" : {
+        "tags" : [ "POST Actions" ],
+        "summary" : "Create New Software Entity. ",
+        "description" : "Add a Software Entity to FFA.  Software Entities contain the softwareName and softwareKeys for each unique software platform created and released by Extreme Networks.",
+        "requestBody" : {
+          "description" : "The following values are **Mandatory**",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ffEntity"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "305" : {
+            "description" : "Required arg not found in JSON payload"
+          }
+        }
+      }
+    },
+    "/ffa/createRuleSet" : {
+      "post" : {
+        "tags" : [ "POST Actions" ],
+        "summary" : "Create New Rule Set",
+        "description" : "Creates a Rule Set for a specific softwareName and buildType.   The new rule set will have the lowest priority within the Rule Sets that contain the same precedence for the same build type.",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ffRuleSet"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "305" : {
+            "description" : "Missing attribtute, invalid operator, incorrect arg count"
+          }
+        }
+      }
+    },
+    "/ffa/{softwareName}/createLabel" : {
+      "post" : {
+        "tags" : [ "POST Actions" ],
+        "summary" : "Create New Label",
+        "description" : "Allows users to create new labels that will be included in the Rule Set evaluations.",
+        "parameters" : [ {
+          "name" : "softwareName",
+          "in" : "path",
+          "description" : "Common name associated with the software",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "305" : {
+            "description" : "Missing arg, duplicate entry"
+          }
+        }
+      }
+    },
+    "/ffa/listSofwareEntities" : {
+      "get" : {
+        "tags" : [ "GET Actions" ],
+        "summary" : "Lists all supported softwareEntities",
+        "description" : "Lists all softwareEntities supported by FFA along with their values. This API is restricted to authenticated users.",
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        }
+      }
+    },
+    "/ffa/{softwareName}/{buildType}/getPolicy" : {
+      "get" : {
+        "tags" : [ "GET Actions" ],
+        "summary" : "Returns policy for a given software package",
+        "description" : "Returns the entire policy for a given software package and build type.  It will include all of the Rule Sets that make up the policy in order of how they will be evaluated.",
+        "parameters" : [ {
+          "name" : "softwareName",
+          "in" : "path",
+          "description" : "SW Name associated with the software",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "buildType",
+          "in" : "path",
+          "description" : "Type of build identified for this version of software",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "202" : {
+            "description" : "No Matching Policy"
+          }
+        }
+      }
+    },
+    "/ffa/{userName}/getUserRuleSets" : {
+      "get" : {
+        "tags" : [ "GET Actions" ],
+        "summary" : "Returns Rule Sets created by user.",
+        "description" : "Returns all of the Rule Sets created by a particular user.  The API supports filtering by fields present in the output including softwareName and various labels used in the Rule Sets.",
+        "parameters" : [ {
+          "name" : "userName",
+          "in" : "path",
+          "description" : "User name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "305" : {
+            "description" : "Failure"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "POST Actions" ],
+        "summary" : "Returns Rule Sets created by user.",
+        "description" : "Returns all of the Rule Sets created by a particular user.  The API supports filtering by fields present in the output including softwareName and various labels used in the Rule Sets.",
+        "parameters" : [ {
+          "name" : "userName",
+          "in" : "path",
+          "description" : "User name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ffgetUserRuleSet"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "305" : {
+            "description" : "Failure"
+          }
+        }
+      }
+    },
+    "/ffa/{softwareName}/getFeatureFlagStatistics" : {
+      "get" : {
+        "tags" : [ "GET Actions" ],
+        "summary" : "Get FF statistics for specified package.",
+        "description" : "Get the feature flags statistics for the specified software package.  This includes:\nThe number of times each policy was tested\nThe number of times a flag was changed for each feature\nIncludes the number of times the feature was enabled\nIncludes the number of times the feature was disabled\nIncludes the sum of disabed and enabled features\nThe number of times a specific Rule Set caused a feature flag to change ",
+        "parameters" : [ {
+          "name" : "softwareName",
+          "in" : "path",
+          "description" : "Common name associated with the software",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        }
+      }
+    },
+    "/ffa/testRuleSet" : {
+      "get" : {
+        "tags" : [ "GET Actions" ],
+        "summary" : "test Rule Set against set of characteristics.",
+        "description" : "Allows a user to test a specific Rule Set against a set of characteristics.  The user will pass in a sample characteristics file along with configuration values for a Rule Set.  The API will then validate the Rule Set and evaluate the Rule Set against the passed in characteristics.",
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        }
+      }
+    },
+    "/ffa/{softwareName}/{buildType}/{ruleSetId}/updateRuleSet" : {
+      "put" : {
+        "tags" : [ "PUT Actions" ],
+        "summary" : "Update/Modify Rule Set",
+        "description" : "Updates the values of an existing Rule Set.  This will allow users to set the priority, enable or disable the Rule Set etc. This API is restricted to authenticated users with specific roles of either developer, PLM, QA and administrator.",
+        "parameters" : [ {
+          "name" : "softwareName",
+          "in" : "path",
+          "description" : "Common name associated with the software",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "buildType",
+          "in" : "path",
+          "description" : "Type of build identified for this version of software",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "ruleSetId",
+          "in" : "path",
+          "description" : "ID of existing rule set",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ffRuleSet"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ffEntity" : {
+        "type" : "object",
+        "properties" : {
+          "softwareName" : {
+            "type" : "string",
+            "example" : "EXOS"
+          },
+          "softwareKey" : {
+            "type" : "string",
+            "example" : "0134A335C90221"
+          }
+        }
+      },
+      "ffRuleSet" : {
+        "type" : "object",
+        "properties" : {
+          "buildType" : {
+            "type" : "string",
+            "example" : "developer"
+          },
+          "softwareKey" : {
+            "type" : "string",
+            "example" : "0134A335C90221"
+          },
+          "orlist" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "ffLabel1 >= value1, fflabel2 == value2, ..."
+            }
+          },
+          "andlist" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "ffLabel1 != value"
+            }
+          },
+          "enabledfeaturelist" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "featureA, featureB, ..."
+            }
+          },
+          "disabledfeaturelist" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "featureA, featureB, ..."
+            }
+          }
+        }
+      },
+      "ffcheckFeatureStates" : {
+        "type" : "object",
+        "properties" : {
+          "softwareKey" : {
+            "type" : "string",
+            "example" : "UID0134A335C90221"
+          },
+          "softwareName" : {
+            "type" : "string",
+            "example" : "EXOS"
+          },
+          "softwareVersion" : {
+            "type" : "string",
+            "example" : "1.0.0"
+          },
+          "buildType" : {
+            "type" : "string",
+            "example" : "developer"
+          },
+          "builder" : {
+            "type" : "string",
+            "example" : "joedeveloper"
+          },
+          "serialNumber" : {
+            "type" : "string",
+            "example" : "xxx444455555"
+          },
+          "userLicenseLevel" : {
+            "type" : "string",
+            "example" : "0123A43B289"
+          },
+          "plaftorm" : {
+            "type" : "string",
+            "example" : "NGX"
+          },
+          "buildDate" : {
+            "type" : "string",
+            "example" : "2020-10-10 10:15:41"
+          },
+          "customerId" : {
+            "type" : "string",
+            "example" : "1023FAB013CC"
+          },
+          "adopterCategory" : {
+            "type" : "string",
+            "example" : "earlyAdopter"
+          },
+          "ffSettings" : {
+            "$ref" : "#/components/schemas/ffcheckFeatureStates_ffSettings"
+          }
+        }
+      },
+      "ffgetUserRuleSet" : {
+        "type" : "object",
+        "properties" : {
+          "contains" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "[\"keyword1\",\"keyword2\",\"...\"]"
+            }
+          },
+          "ignore" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "[\"keyword1\",\"keyword2\",\"...\"]"
+            }
+          },
+          "daterange" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "[\"2020-11-10,2020-11-20\"]"
+            }
+          }
+        }
+      },
+      "body" : {
+        "type" : "object",
+        "properties" : {
+          "labelName" : {
+            "type" : "string",
+            "example" : "NewLabel"
+          },
+          "precedenceLevel" : {
+            "type" : "integer",
+            "example" : 1
+          }
+        }
+      },
+      "ffcheckFeatureStates_ffSettings" : {
+        "type" : "object",
+        "properties" : {
+          "featureA" : {
+            "type" : "string",
+            "example" : "enabled"
+          }
+        }
+      }
+    },
+    "parameters" : {
+      "FeatureStatePathParams" : {
+        "name" : "softwareName",
+        "in" : "path",
+        "description" : "Common name associated with the software",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "string",
+          "example" : "/ffa/EXOS/checkFeatureStates"
+        }
+      },
+      "ffaSettingsQueryParam" : {
+        "name" : "ffSettings",
+        "in" : "query",
+        "description" : "Required",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "ffSettings='feat1:enabled,feat2:disabled'"
+        }
+      },
+      "ffaEnabledQueryParam" : {
+        "name" : "ffaEnabled",
+        "in" : "query",
+        "description" : "Required (none, developer, official, GA )",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "ffaEnabled=developer"
+        }
+      },
+      "softwareNameQueryParam" : {
+        "name" : "softwareName",
+        "in" : "query",
+        "description" : "Required",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "softwareName=EXOS"
+        }
+      },
+      "softwareKeyQueryParam" : {
+        "name" : "softwareKey",
+        "in" : "query",
+        "description" : "Required",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "softwareKey=0134A335C90221"
+        }
+      },
+      "buildTypeQueryParam" : {
+        "name" : "buildType",
+        "in" : "query",
+        "description" : "Required (developer, official, GA)",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "buildType=developer"
+        }
+      },
+      "builderQueryParam" : {
+        "name" : "builder",
+        "in" : "query",
+        "description" : "Required",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "builder=mgoddard"
+        }
+      },
+      "serialNumberQueryParam" : {
+        "name" : "serialNumber",
+        "in" : "query",
+        "description" : "Required",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "serialNumber=jsj1234"
+        }
+      },
+      "userLicenseQueryParam" : {
+        "name" : "userLicense",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "userLicense=0123A43B289"
+        }
+      },
+      "softwareVersionQueryParam" : {
+        "name" : "softwareVersion",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "softwareVersion=1.0.0.2"
+        }
+      },
+      "buildDateQueryParam" : {
+        "name" : "buildDate",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : true,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "buildDate='2020-10-10 10:15:41'"
+        }
+      },
+      "bootTimeQueryParam" : {
+        "name" : "bootTime",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "bootTime='2020-10-10 11:05:11'"
+        }
+      },
+      "platformQueryParam" : {
+        "name" : "platform",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "platform=NGX"
+        }
+      },
+      "customerIdQueryParam" : {
+        "name" : "customerId",
+        "in" : "query",
+        "description" : "Optional",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "customerId=1023FAB013CC"
+        }
+      },
+      "adopterCategoryQueryParam" : {
+        "name" : "adopterCategory",
+        "in" : "query",
+        "description" : "Optional, use one of - 'innovator', 'earlyAdopter', 'earlyMajority', 'lastMajority', 'laggard'",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string",
+          "example" : "adopterCategory=earlyAdopter"
+        }
+      }
+    }
+  }
+}
